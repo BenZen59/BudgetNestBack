@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { BankAccountModule } from './bankAccount/bankAccount.module';
 
 @Module({
+  controllers: [AppController],
+  providers: [AppService],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // rend la config accessible partout sans l'importer à chaque fois
@@ -12,18 +17,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: (config: ConfigService) => ({
         type: 'mssql',
         host: config.get<string>('DB_HOST'),
-        port: config.get<number>('DB_PORT'),
+        port: parseInt(config.get<string>('DB_PORT')!, 10),
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // à désactiver en prod
+        synchronize: false, // à désactiver en prod
         options: {
           encrypt: false,
         },
       }),
       inject: [ConfigService],
     }),
+    BankAccountModule,
   ],
 })
 export class AppModule {}
