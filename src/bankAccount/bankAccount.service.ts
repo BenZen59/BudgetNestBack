@@ -14,12 +14,13 @@ export class BankAccountService {
     return this.repo.find();
   }
 
-  async getTotalAmount(): Promise<number> {
+  async getTotalAmount(): Promise<{ total: number }> {
     const result = await this.repo
       .createQueryBuilder('bank_account')
       .select('SUM(bank_account.amount)', 'total')
       .getRawOne<{ total: string }>();
 
-    return parseFloat(result?.total ?? '0');
+    const total = parseFloat(result?.total ?? '0');
+    return { total };
   }
 }
