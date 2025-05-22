@@ -16,7 +16,8 @@ export class Categories {
 
   @Column()
   name_category: string;
-
+  @Column()
+  type: string;
   @ManyToOne(() => Icon)
   @JoinColumn({ name: 'id_icon' })
   icon: Icon;

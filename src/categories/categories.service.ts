@@ -11,6 +11,8 @@ export class CategoriesService {
   ) {}
 
   async findAll(): Promise<Categories[]> {
-    return this.repo.find();
+    return this.repo.find({
+      relations: ['icon', 'color'],
+    });
   }
 }
